@@ -1,12 +1,28 @@
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddCors(options =>
+    {
+        options.AddDefaultPolicy( policity =>
+            {
+                policity
+                    .AllowAnyOrigin()
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+            }
+        )
+    }
+)
+
 var app = builder.Build();
+
+app.UseCors()
 
 app.MapGet("/",() =>
 {
     return "API Panaderia funcionando";
 });
 
-app.MapGet("/api/panaderia",() =>
+app.MapGet("/api/panadera",() =>
 {
     return Results.Ok(new[]
     {
@@ -18,10 +34,10 @@ app.MapGet("/api/panaderia",() =>
         new{
             id=2,
             codigo="P002",
-            nombre="Pan Chino",
+            nombre="Pan chino",
         }
     });
 });
 
-
-app.Run();
+var port = Environment.GetEnvironmentVariable("Port")??"10000",
+app.Run($"http://0.0.0.0:(port)");
